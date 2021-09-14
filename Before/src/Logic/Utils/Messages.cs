@@ -1,7 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
+using Logic.Students;
 using System;
 
-namespace Logic.Students
+namespace Logic.Utils
 {
     public sealed class Messages
     {
@@ -20,6 +21,18 @@ namespace Logic.Students
 
             var handler = (ICommandHandler<ICommand>)_serviceProvider.GetService(handlerType);
             Result result = handler.Handle(command);
+
+            return result;
+        }
+
+        public T Dispatch<T>(IQuery<T> query)
+        {
+            Type type = typeof(IQueryHandler<,>);
+            Type[] typeArgs = { query.GetType(), typeof(T) };
+            Type handlerType = type.MakeGenericType(typeArgs);
+
+            dynamic handler = _serviceProvider.GetService(handlerType);
+            T result = handler.Handle((dynamic)query);
 
             return result;
         }
