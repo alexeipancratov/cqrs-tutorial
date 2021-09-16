@@ -1,5 +1,6 @@
 ﻿namespace Logic.Dtos
 {
+    // NOTE: DTO should be placed in its own separate project.
     public sealed class StudentDto
     {
         public long Id { get; set; }

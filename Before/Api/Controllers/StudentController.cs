@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Api.Dtos;
+using Logic.Dtos;
 using Logic.Students;
+using Logic.Students.Commands;
+using Logic.Students.Queries;
 using Logic.Utils;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,24 +34,10 @@ namespace Api.Controllers
         [HttpPost]
         public IActionResult Register([FromBody] NewStudentDto dto)
         {
-            var student = new Student(dto.Name, dto.Email);
+            var command = new RegisterCommand(dto.Name, dto.Email, dto.Course1, dto.Course1Grade, dto.Course2, dto.Course2Grade);
+            var result = _messages.Dispatch(command);
 
-            if (dto.Course1 != null && dto.Course1Grade != null)
-            {
-                Course course = _courseRepository.GetByName(dto.Course1);
-                student.Enroll(course, Enum.Parse<Grade>(dto.Course1Grade));
-            }
-
-            if (dto.Course2 != null && dto.Course2Grade != null)
-            {
-                Course course = _courseRepository.GetByName(dto.Course2);
-                student.Enroll(course, Enum.Parse<Grade>(dto.Course2Grade));
-            }
-
-            _studentRepository.Save(student);
-            _unitOfWork.Commit();
-
-            return Ok();
+            return result.IsSuccess ? Ok() : Error(result.Error);
         }
 
         [HttpDelete("{id}")]

@@ -28,7 +28,7 @@ namespace Logic.Students
             Email = email;
         }
 
-        public Enrollment GetEnrollment(int index)
+        public virtual Enrollment GetEnrollment(int index)
         {
             if (_enrollments.Count > index)
                 return _enrollments[index];
