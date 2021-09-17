@@ -29,6 +29,11 @@ namespace Api
             services.AddSingleton(new SessionFactory(Configuration["ConnectionString"]));
             services.AddScoped<UnitOfWork>();
             services.AddScoped<ICommandHandler<EditPersonalInfoCommand>, EditPersonalInfoCommandHandler>();
+            services.AddScoped<ICommandHandler<DisenrollCommand>, DisenrollCommandHandler>();
+            services.AddScoped<ICommandHandler<EnrollCommand>, EnrollCommandHandler>();
+            services.AddScoped<ICommandHandler<RegisterCommand>, RegisterCommandHandler>();
+            services.AddScoped<ICommandHandler<TransferCommand>, TransferCommandHandler>();
+            services.AddScoped<ICommandHandler<UnregisterCommand>, UnregisterCommandHandler>();
             services.AddScoped<IQueryHandler<GetListQuery, List<StudentDto>>, GetListQueryHandler>();
             services.AddScoped<Messages>();
             
