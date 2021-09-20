@@ -1,7 +1,7 @@
-﻿using System;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using Logic.Students.Commands;
 using Newtonsoft.Json;
+using System;
 
 namespace Logic.Decorators
 {
@@ -19,7 +19,7 @@ namespace Logic.Decorators
         {
             string commandJson = JsonConvert.SerializeObject(command);
 
-            // Use proper logging here
+            // Use proper logging here.
             Console.WriteLine($"Command of type {command.GetType().Name}: {commandJson}");
 
             return _handler.Handle(command);

@@ -1,3 +1,5 @@
+using Api.Utils;
+using Logic.Decorators;
 using Logic.Dtos;
 using Logic.Students.Commands;
 using Logic.Students.Commands.CommandHandlers;
@@ -26,17 +28,26 @@ namespace Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var config = new Config(3);
+            services.AddSingleton(config);
+
             services.AddSingleton(new SessionFactory(Configuration["ConnectionString"]));
             services.AddScoped<UnitOfWork>();
-            services.AddScoped<ICommandHandler<EditPersonalInfoCommand>, EditPersonalInfoCommandHandler>();
-            services.AddScoped<ICommandHandler<DisenrollCommand>, DisenrollCommandHandler>();
-            services.AddScoped<ICommandHandler<EnrollCommand>, EnrollCommandHandler>();
-            services.AddScoped<ICommandHandler<RegisterCommand>, RegisterCommandHandler>();
-            services.AddScoped<ICommandHandler<TransferCommand>, TransferCommandHandler>();
-            services.AddScoped<ICommandHandler<UnregisterCommand>, UnregisterCommandHandler>();
-            services.AddScoped<IQueryHandler<GetListQuery, List<StudentDto>>, GetListQueryHandler>();
+            //services.AddScoped<ICommandHandler<EditPersonalInfoCommand>>(provider =>
+            //   new AuditLoggingDecorator<EditPersonalInfoCommand>(
+            //       new DatabaseRetryDecorator<EditPersonalInfoCommand>(
+            //           new EditPersonalInfoCommandHandler(provider.GetService<SessionFactory>()),
+            //           provider.GetService<Config>())
+            //   ));
+            //services.AddScoped<ICommandHandler<DisenrollCommand>, DisenrollCommandHandler>();
+            //services.AddScoped<ICommandHandler<EnrollCommand>, EnrollCommandHandler>();
+            //services.AddScoped<ICommandHandler<RegisterCommand>, RegisterCommandHandler>();
+            //services.AddScoped<ICommandHandler<TransferCommand>, TransferCommandHandler>();
+            //services.AddScoped<ICommandHandler<UnregisterCommand>, UnregisterCommandHandler>();
+            //services.AddScoped<IQueryHandler<GetListQuery, List<StudentDto>>, GetListQueryHandler>();
             services.AddScoped<Messages>();
-            
+            services.AddHandlers();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

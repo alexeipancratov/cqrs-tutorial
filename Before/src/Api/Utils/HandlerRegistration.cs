@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Logic.Decorators;
+﻿using Logic.Decorators;
 using Logic.Students.Commands;
 using Logic.Students.Queries;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Api.Utils
 {
@@ -14,8 +14,8 @@ namespace Api.Utils
         public static void AddHandlers(this IServiceCollection services)
         {
             List<Type> handlerTypes = typeof(ICommand).Assembly.GetTypes()
-                .Where(x => x.GetInterfaces().Any(y => IsHandlerInterface(y)))
-                .Where(x => x.Name.EndsWith("Handler"))
+                .Where(t => t.GetInterfaces().Any(i => IsHandlerInterface(i)))
+                .Where(t => t.Name.EndsWith("Handler"))
                 .ToList();
 
             foreach (Type type in handlerTypes)
@@ -29,23 +29,23 @@ namespace Api.Utils
             object[] attributes = type.GetCustomAttributes(false);
 
             List<Type> pipeline = attributes
-                .Select(x => ToDecorator(x))
+                .Select(a => ToDecorator(a))
                 .Concat(new[] { type })
                 .Reverse()
                 .ToList();
 
-            Type interfaceType = type.GetInterfaces().Single(y => IsHandlerInterface(y));
+            Type interfaceType = type.GetInterfaces().Single(t => IsHandlerInterface(t));
             Func<IServiceProvider, object> factory = BuildPipeline(pipeline, interfaceType);
 
-            services.AddTransient(interfaceType, factory);
+            services.AddScoped(interfaceType, factory);
         }
 
         private static Func<IServiceProvider, object> BuildPipeline(List<Type> pipeline, Type interfaceType)
         {
             List<ConstructorInfo> ctors = pipeline
-                .Select(x =>
+                .Select(t =>
                 {
-                    Type type = x.IsGenericType ? x.MakeGenericType(interfaceType.GenericTypeArguments) : x;
+                    Type type = t.IsGenericType ? t.MakeGenericType(interfaceType.GenericTypeArguments) : t;
                     return type.GetConstructors().Single();
                 })
                 .ToList();
@@ -86,26 +86,34 @@ namespace Api.Utils
             Type parameterType = parameterInfo.ParameterType;
 
             if (IsHandlerInterface(parameterType))
+            {
                 return current;
+            }
 
             object service = provider.GetService(parameterType);
             if (service != null)
+            {
                 return service;
+            }
 
-            throw new ArgumentException($"Type {parameterType} not found");
+            throw new ArgumentException($"Type {parameterType} not found.");
         }
 
         private static Type ToDecorator(object attribute)
         {
             Type type = attribute.GetType();
 
-            //if (type == typeof(DatabaseRetryAttribute))
-            //    return typeof(DatabaseRetryDecorator<>);
+            if (type == typeof(DatabaseRetryAttribute))
+            {
+                return typeof(DatabaseRetryAttribute);
+            }
 
             if (type == typeof(AuditLogAttribute))
-                return typeof(AuditLoggingDecorator<>);
+            {
+                return typeof(AuditLogAttribute);
+            }
 
-            // other attributes go here
+            // more attributes
 
             throw new ArgumentException(attribute.ToString());
         }
@@ -113,7 +121,9 @@ namespace Api.Utils
         private static bool IsHandlerInterface(Type type)
         {
             if (!type.IsGenericType)
+            {
                 return false;
+            }
 
             Type typeDefinition = type.GetGenericTypeDefinition();
 
