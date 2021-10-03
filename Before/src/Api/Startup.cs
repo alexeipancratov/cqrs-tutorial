@@ -1,10 +1,4 @@
 using Api.Utils;
-using Logic.Decorators;
-using Logic.Dtos;
-using Logic.Students.Commands;
-using Logic.Students.Commands.CommandHandlers;
-using Logic.Students.Queries;
-using Logic.Students.Queries.QueryHandlers;
 using Logic.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using System.Collections.Generic;
 
 namespace Api
 {
@@ -32,7 +25,6 @@ namespace Api
             services.AddSingleton(config);
 
             services.AddSingleton(new SessionFactory(Configuration["ConnectionString"]));
-            services.AddScoped<UnitOfWork>();
             //services.AddScoped<ICommandHandler<EditPersonalInfoCommand>>(provider =>
             //   new AuditLoggingDecorator<EditPersonalInfoCommand>(
             //       new DatabaseRetryDecorator<EditPersonalInfoCommand>(

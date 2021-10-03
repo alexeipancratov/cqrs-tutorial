@@ -105,12 +105,12 @@ namespace Api.Utils
 
             if (type == typeof(DatabaseRetryAttribute))
             {
-                return typeof(DatabaseRetryAttribute);
+                return typeof(DatabaseRetryDecorator<>);
             }
 
             if (type == typeof(AuditLogAttribute))
             {
-                return typeof(AuditLogAttribute);
+                return typeof(AuditLoggingDecorator<>);
             }
 
             // more attributes
