@@ -24,7 +24,10 @@ namespace Api
             var config = new Config(3);
             services.AddSingleton(config);
 
-            services.AddSingleton(new SessionFactory(Configuration["ConnectionString"]));
+            var connectionString = new ConnectionString(Configuration["ConnectionString"]);
+            services.AddSingleton(connectionString);
+
+            services.AddSingleton(new SessionFactory(connectionString));
             //services.AddScoped<ICommandHandler<EditPersonalInfoCommand>>(provider =>
             //   new AuditLoggingDecorator<EditPersonalInfoCommand>(
             //       new DatabaseRetryDecorator<EditPersonalInfoCommand>(
