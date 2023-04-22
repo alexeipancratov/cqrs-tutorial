@@ -1,14 +1,9 @@
-Welcome to CQRS in Practice
+CQRS in Practice
 =====================
 
-This is the source code for my Pluralsight course [CQRS in Practice][L1]
+This is a sample project for how to implement CQRS in practice which is based on a corresponding Pluralsight course.
 
-How to Get Started
+More details
 --------------
 
-There are 2 versions of the source code: Before and After. The Before version contains the code developed without the CQRS pattern in mind. The After folder is the final version after all refactorings towards CQRS.
-
-In order to run the application, you need to create a database, and change the connection string in appsettings.json.
-
-[L1]: https://enterprisecraftsmanship.com/ps-cqrs
-
+Technically it's a fork of the https://github.com/vkhorikov/CqrsInPractice repository.
